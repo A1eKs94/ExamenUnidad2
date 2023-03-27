@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
@@ -53,18 +55,79 @@ public class Ventana extends JFrame{
 
 		// CUENTA
 		JMenuItem jmi1 = new JMenuItem("Mi cuenta");
+		// ACTION LISTENER
+		jmi1.addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							anterior = actual;
+							actual = "cuenta";
+							
+							route();
+						}
+						
+					});
 		JMenuItem jmi2 = new JMenuItem("Cerrar sesión");
+		jmi2.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "login";
+				
+				route();
+			}
+			
+		});
 		menu1.add(jmi1);
 		menu1.add(jmi2);
 		
 		// USUARIO
 		JMenuItem jmi3 = new JMenuItem("Lista de usuarios");
+		jmi3.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "usuarios";
+				
+				route();
+			}
+			
+		});
 		JMenuItem jmi4 = new JMenuItem("Crear usuario");
+		jmi4.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "registro";
+				
+				route();
+			}
+			
+		});
 		menu2.add(jmi3);
 		menu2.add(jmi4);
 		
 		// AYUDA
 		JMenuItem jmi5 = new JMenuItem("¿Como crear usuarios?");
+		jmi5.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "ayuda";
+				
+				route();
+			}
+			
+		});
 		menu3.add(jmi5);
 
 		if(archivo.exists()) {
@@ -77,8 +140,8 @@ public class Ventana extends JFrame{
 				e1.printStackTrace();
 			}
 		}
-		//this.route();
-		usuarios();
+		this.route();
+		//usuarios();
 	}
 	
 	public void route() {
@@ -142,6 +205,20 @@ public class Ventana extends JFrame{
 		botonInicio.setLocation(200, 350);
 		inicio.add(botonInicio);
 		
+		// ACTION LISTENER
+		botonInicio.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "login";
+				
+				route();
+			}
+			
+		});
+		
 		this.add(inicio);
 		inicio.setVisible(true);
 		inicio.repaint();
@@ -160,10 +237,39 @@ public class Ventana extends JFrame{
 		botonL.setLocation(100,180);
 		login.add(botonL);
 		
+		// ACTION LISTENER
+		botonL.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "lobby";
+				
+				route();
+			}
+			
+		});
+		
+		
 		JButton cancelarL = new JButton("Cancelar");
 		cancelarL.setSize(90, 40);
 		cancelarL.setLocation(280,180);
 		login.add(cancelarL);
+		
+		// ACTION LISTENER
+			cancelarL.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						anterior = actual;
+						actual = "inicio";
+						
+						route();
+					}
+					
+				});
 		
 		// Etiqueta
 		JLabel etiqueta = new JLabel("Bienvenido");
@@ -441,6 +547,18 @@ public class Ventana extends JFrame{
 		JButton registrarU = new JButton("Crear");
 		registrarU.setSize(120,30);
 		registrarU.setLocation(50,660);
+		registrarU.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "login";
+				
+				route();
+			}
+			
+		});
 		registro.add(registrarU);
 		// BOTON CANCELAR
 		JButton cancelarR = new JButton("Cancelar");
@@ -503,6 +621,18 @@ public class Ventana extends JFrame{
 		JButton botonAyuda = new JButton("Crear un usuario ahora");
 		botonAyuda.setSize(200,30);
 		botonAyuda.setLocation(150, 470);
+		botonAyuda.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "registro";
+				
+				route();
+			}
+			
+		});
 		ayuda.add(botonAyuda);
 
 		this.add(ayuda);
