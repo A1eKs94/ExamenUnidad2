@@ -6,11 +6,14 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JPasswordField;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 
@@ -18,8 +21,8 @@ public class Ventana extends JFrame{
 
 	File archivo = new File("users.txt");
 	
-	private String actual = "login";
-	private String anterior = "login";
+	private String actual = "inicio";
+	private String anterior = "inicio";
 	private JPanel gran_panel = null;
 	
 	Ventana(){
@@ -74,7 +77,8 @@ public class Ventana extends JFrame{
 				e1.printStackTrace();
 			}
 		}
-		cuenta();
+		//this.route();
+		usuarios();
 	}
 	
 	public void route() {
@@ -103,6 +107,9 @@ public class Ventana extends JFrame{
 			}
 			if(actual.equals("cuenta")) { 
 				gran_panel = cuenta();  
+			}
+			if(actual.equals("usuarios")) { 
+				gran_panel = usuarios();  
 			}
 			
 			this.add(gran_panel);
@@ -233,14 +240,134 @@ public class Ventana extends JFrame{
 		cuenta.setBackground(Color.decode("#E1D8FF"));
 		cuenta.setLayout(null);
 		
+		JLabel titulo = new JLabel("Mi Cuenta");
+		titulo.setFont(new Font("Arial", Font.BOLD, 45));
+		titulo.setSize(300, 40);
+		titulo.setLocation(130, 30);
+		cuenta.add(titulo);
 		
+		ImageIcon imagen = new ImageIcon("user.png");
+		JLabel imagenA = new JLabel(imagen);
+		imagenA.setLocation(150, 70);
+		imagenA.setSize(200, 150);
+		cuenta.add(imagenA);
+		
+		JLabel etiqueta1 = new JLabel("Nombre");
+		etiqueta1.setSize(160, 50);
+		etiqueta1.setLocation(30, 200);
+		cuenta.add(etiqueta1);
+
+		JTextField nombre = new JTextField();
+		nombre.setSize(420, 30);
+		nombre.setLocation(30, 240);
+		cuenta.add(nombre);
+		
+		JLabel etiqueta2 = new JLabel("Apellidos");
+		etiqueta2.setSize(160, 50);
+		etiqueta2.setLocation(30, 280);
+		cuenta.add(etiqueta2);
+
+		JTextField apellido = new JTextField();
+		apellido.setSize(420, 30);
+		apellido.setLocation(30, 320);
+		cuenta.add(apellido);
+		
+		JLabel etiqueta3 = new JLabel("Correo");
+		etiqueta3.setSize(160, 50);
+		etiqueta3.setLocation(30, 360);
+		cuenta.add(etiqueta3);
+
+		JTextField correo = new JTextField();
+		correo.setSize(420, 30);
+		correo.setLocation(30, 400);
+		cuenta.add(correo);
+		
+		JLabel etiqueta4 = new JLabel("Contraseña");
+		etiqueta4.setSize(160, 50);
+		etiqueta4.setLocation(30, 440);
+		cuenta.add(etiqueta4);
+
+		JPasswordField pass = new JPasswordField();
+		pass.setSize(420, 30);
+		pass.setLocation(30, 480);
+		cuenta.add(pass);
+		
+		JButton edit = new JButton("Guardar");
+		edit.setSize(120, 30);
+		edit.setLocation(80, 550);
+		cuenta.add(edit);
+		JButton cancelar = new JButton("Cancelar");
+		cancelar.setSize(120, 30);
+		cancelar.setLocation(270, 550);
+		cuenta.add(cancelar);
 		
 		this.add(cuenta);
 		cuenta.setVisible(true);
 		cuenta.repaint();
 		return cuenta;
 	}
+	
+	private JPanel usuarios() {
+		JPanel usuarios = new JPanel();
+		usuarios.setVisible(false);
+		usuarios.setSize(500,800);
+		usuarios.setBackground(Color.decode("#E1D8FF"));
+		usuarios.setLayout(null);
+		
+		JLabel titulo = new JLabel("Lista de Usuarios");
+		titulo.setSize(220, 40);
+		titulo.setLocation(135, 30);
+		titulo.setFont(new Font("Arial", Font.BOLD, 25));
+		usuarios.add(titulo);
+		
+		JLabel etiqueta1 = new JLabel("Editar");
+		etiqueta1.setSize(150, 30);
+		etiqueta1.setLocation(20, 80);
+		etiqueta1.setFont(new Font("Arial", Font.BOLD, 15));
+		usuarios.add(etiqueta1);
+		
+		
+		JComboBox lista = new JComboBox();
+		lista.setSize(400,40);
+		lista.setLocation(50, 110);
+		usuarios.add(lista);
+		
+		JButton edit = new JButton("Editar");
+		edit.setSize(400,40);
+		edit.setLocation(50, 160);
+		edit.setFont(new Font("Arial", Font.BOLD, 25));
+		usuarios.add(edit);
+		
+		Object[][] data = {
+	            {" ", " ", " "}
+	        };
+	        
+	        // Crear nombres de columna para la tabla
+	        String[] columnNames = {"Usuario", "Nombre", "Acciones"};
 
+	        // Crear la tabla con los datos y nombres de columna
+	        JTable table = new JTable(data, columnNames);
+
+	        // Añadir titulos a las columnas
+	        table.getColumnModel().getColumn(0).setHeaderValue("Usuario");
+	        table.getColumnModel().getColumn(1).setHeaderValue("Nombre");
+	        table.getColumnModel().getColumn(2).setHeaderValue("Acciones");
+
+	        // Agregar la tabla a un JScrollPane
+	        JScrollPane scrollPane = new JScrollPane(table);
+	        usuarios.add(scrollPane);
+	        
+	        // Establecer tamaño y posición de la tabla
+	        scrollPane.setSize(400, 230);
+	        scrollPane.setLocation(50, 280);
+	        usuarios.add(scrollPane);
+        
+		this.add(usuarios);
+		usuarios.setVisible(true);
+		usuarios.repaint();
+		return usuarios;
+	}
+	
 	private JPanel registro() {
 		JPanel registro = new JPanel();
 		registro.setVisible(false);
