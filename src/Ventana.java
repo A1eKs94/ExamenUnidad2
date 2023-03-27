@@ -2,7 +2,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JPasswordField;
@@ -237,19 +242,6 @@ public class Ventana extends JFrame{
 		botonL.setLocation(100,180);
 		login.add(botonL);
 		
-		// ACTION LISTENER
-		botonL.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				anterior = actual;
-				actual = "lobby";
-				
-				route();
-			}
-			
-		});
 		
 		
 		JButton cancelarL = new JButton("Cancelar");
@@ -264,7 +256,7 @@ public class Ventana extends JFrame{
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
 						anterior = actual;
-						actual = "inicio";
+						actual = "login";
 						
 						route();
 					}
@@ -303,7 +295,58 @@ public class Ventana extends JFrame{
 		password.setLocation(30, 140);
 		password.setOpaque(true);
 		login.add(password);
-		
+		// ACTION LISTENER
+				botonL.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+// GET USER
+						String userLogin = texto.getText();
+// CONVERSION DEL ARREGLO DE CHAR A STRING 
+						String chrPass = String.valueOf(password.getPassword());// LECTOR DE DOCUMENTOS						
+						BufferedReader reader;
+						
+						try {
+							reader = new BufferedReader(new FileReader("users.txt"));
+							
+							String line = reader.readLine();
+/////////////////////// CICLO PARA LEER TODAS LAS LINEAS DEL DOCUMENTO
+							while(line != null) {
+								String [] datos = null;
+								
+								datos = line.split(",");
+
+								if(datos[2].equals(userLogin)) {
+									if(datos[3].equals(chrPass)) {
+										JOptionPane.showMessageDialog(null, "Bienvenido", " ", JOptionPane.PLAIN_MESSAGE);
+										
+										break;
+									}else {
+										JOptionPane.showMessageDialog(null, "Contraseña incorrecta", " ", JOptionPane.PLAIN_MESSAGE);
+										return;
+									}
+								}else {
+									JOptionPane.showMessageDialog(null, "Usuario incorrecto", " ", JOptionPane.PLAIN_MESSAGE);
+									return;
+								}
+								//line = reader.readLine();
+							}
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}			
+						anterior = actual;
+						actual = "lobby";
+						
+						route();
+						repaint();
+						
+					}
+				});
+			/*	anterior = actual;
+				actual = "lobby";
+				
+				route();*/
 		// Agregar el panel al JFrame
 		this.add(login); 
 		
@@ -401,10 +444,34 @@ public class Ventana extends JFrame{
 		JButton edit = new JButton("Guardar");
 		edit.setSize(120, 30);
 		edit.setLocation(80, 550);
+		edit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "cuenta";
+				
+				route();
+			}
+			
+		});
 		cuenta.add(edit);
 		JButton cancelar = new JButton("Cancelar");
 		cancelar.setSize(120, 30);
 		cancelar.setLocation(270, 550);
+		cancelar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "cuenta";
+				
+				route();
+			}
+			
+		});
 		cuenta.add(cancelar);
 		
 		this.add(cuenta);
@@ -548,15 +615,51 @@ public class Ventana extends JFrame{
 		registrarU.setSize(120,30);
 		registrarU.setLocation(50,660);
 		registrarU.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				anterior = actual;
-				actual = "login";
-				
-				route();
-			}
+				try {
+					
+					BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+					
+					String line1 = br.readLine();
+					
+					if(!String.valueOf(pass1.getPassword()).equals(String.valueOf(pass2.getPassword()))){
+						JOptionPane.showMessageDialog(null, "ERROR: La contraseña es distinta, repita contraseña", " ", JOptionPane.PLAIN_MESSAGE);
+						return;
+					}
+					
+					while(line1 != null) {
+						String datos1 [] = null;
+						datos1 = line1.split(",");
+						if(datos1[2].equals(correo.getText())) {
+							JOptionPane.showMessageDialog(null, "ERROR: Este correo ya esta en uso", " ", JOptionPane.PLAIN_MESSAGE);	
+							return;
+						}
+						
+						line1 = br.readLine();
+					}
+					br.close();
+					
+					if(!terminos.isSelected()) {
+						JOptionPane.showMessageDialog(null, "Acepte los terminos y condiciones :)", " ", JOptionPane.PLAIN_MESSAGE);
+						return;
+					}
+					
+					BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt", true));
+					bw.write(nomR.getText() + "," + apR.getText() + "," + correo.getText() + "," + String.valueOf(pass1.getPassword()));
+					bw.newLine();
+					bw.flush();
+					bw.close();
+					JOptionPane.showMessageDialog(null, "Cuenta registrada exitosamente", " ", JOptionPane.PLAIN_MESSAGE);
+					anterior = actual;
+					actual = "login";
+					route();
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+			} 
 			
 		});
 		registro.add(registrarU);
@@ -564,8 +667,19 @@ public class Ventana extends JFrame{
 		JButton cancelarR = new JButton("Cancelar");
 		cancelarR.setSize(120,30);
 		cancelarR.setLocation(310,660);
+		cancelarR.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "registro";
+				
+				route();
+			}
+			
+		});
 		registro.add(cancelarR);
-	
 		this.add(registro);
 		registro.setVisible(true);
 		registro.repaint();
