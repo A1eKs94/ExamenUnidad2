@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Ventana extends JFrame{
 
@@ -501,6 +502,21 @@ public class Ventana extends JFrame{
 		JComboBox lista = new JComboBox();
 		lista.setSize(400,40);
 		lista.setLocation(50, 110);
+		List<String> userList = new ArrayList<>();
+
+		try {
+		    BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		        userList.add(line);
+		    }
+		    br.close();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+		for (String user : userList) {
+			lista.addItem(user);
+		}
 		usuarios.add(lista);
 		
 		JButton edit = new JButton("Editar");
