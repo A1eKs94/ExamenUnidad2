@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class Ventana extends JFrame{
 	private String actual = "inicio";
 	private String anterior = "inicio";
 	private JPanel gran_panel = null;
+	private UsuarioLogeado usuarioLog;
 	
 	Ventana(){
 		this.setVisible(true);
@@ -438,24 +440,63 @@ public class Ventana extends JFrame{
 		pass.setSize(420, 30);
 		pass.setLocation(30, 480);
 		cuenta.add(pass);
-		
+///////////////////////////////////////////////////////////////////////////		
 		JButton edit = new JButton("Guardar");
 		edit.setSize(120, 30);
 		edit.setLocation(80, 550);
 		edit.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				List<String> userList = new ArrayList<>();
+				BufferedReader br;
+				try {
+					br = new BufferedReader(new FileReader("users.txt"));
+					String line1 = br.readLine();
+					while(line1 != null) {
+						userList.add(line1);
+						String datos1 [] = null;
+						datos1 = line1.split(",");
+						if(datos1[2].equals(correo.getText()) && !datos1[2].equals(usuarioLog.getCorreo())) {
+							JOptionPane.showMessageDialog(null, "ERROR: Este correo ya esta en uso", " ", JOptionPane.PLAIN_MESSAGE);	
+							return;
+						}
+						
+						line1 = br.readLine();
+					}
+					br.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				userList.set(usuarioLog.getCont(), nombre.getText() + "," + apellido.getText() + "," + correo.getText() + "," + String.valueOf(pass.getPassword()));
+				
+				try {
+					BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"));
+					for(int i = 0; i < userList.size(); i++) {
+						bw.write(userList.get(i));
+						bw.flush();
+						bw.newLine();
+					}
+					bw.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				anterior = actual;
-				actual = "cuenta";
+				actual = "usuarios";
 				
 				route();
 			}
 			
 		});
 		cuenta.add(edit);
+/////////////////////////////////////////////////////////////////////////////
 		JButton cancelar = new JButton("Cancelar");
 		cancelar.setSize(120, 30);
 		cancelar.setLocation(270, 550);
@@ -464,6 +505,7 @@ public class Ventana extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+
 				anterior = actual;
 				actual = "cuenta";
 				
@@ -472,6 +514,11 @@ public class Ventana extends JFrame{
 			
 		});
 		cuenta.add(cancelar);
+		
+		nombre.setText(usuarioLog.getNombre());
+		apellido.setText(usuarioLog.getApellido());
+		correo.setText(usuarioLog.getCorreo());
+		pass.setText(usuarioLog.getContraseña());
 		
 		this.add(cuenta);
 		cuenta.setVisible(true);
@@ -498,7 +545,7 @@ public class Ventana extends JFrame{
 		etiqueta1.setFont(new Font("Arial", Font.BOLD, 15));
 		usuarios.add(etiqueta1);
 		
-		
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// LISTA COMBOBOX
 		JComboBox lista = new JComboBox();
 		lista.setSize(400,40);
 		lista.setLocation(50, 110);
@@ -508,7 +555,8 @@ public class Ventana extends JFrame{
 		    BufferedReader br = new BufferedReader(new FileReader("users.txt"));
 		    String line;
 		    while ((line = br.readLine()) != null) {
-		        userList.add(line);
+		    	String[] separador = line.split(",");
+		        userList.add(separador[2]);
 		    }
 		    br.close();
 		} catch (IOException e) {
@@ -518,25 +566,42 @@ public class Ventana extends JFrame{
 			lista.addItem(user);
 		}
 		usuarios.add(lista);
-		
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton edit = new JButton("Editar");
 		edit.setSize(400,40);
 		edit.setLocation(50, 160);
 		edit.setFont(new Font("Arial", Font.BOLD, 25));
 		edit.addActionListener(new ActionListener(){
-
+		
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				anterior = actual;
+				
+				String correoUser = (String)lista.getSelectedItem();
+				
+				try {
+				    BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+				    String line;
+				    int cont = 0;
+				    while ((line = br.readLine()) != null) {
+				    	String[] separador = line.split(",");
+				      if(separador[2].equals(correoUser)) {
+				    	  usuarioLog = new UsuarioLogeado(separador[0], separador[1], separador[2], separador[3], cont);
+				    	  break;
+				      }
+				      cont++;
+				    }
+				    br.close();
+				} catch (IOException e1) {
+				    e1.printStackTrace();
+				}
 				actual = "cuenta";
-					
 				route();
 			}
 			
 		});
 		usuarios.add(edit);
-		
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 		 ArrayList<String[]> datos2 = new ArrayList<>();
 	        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
 	            String line;
