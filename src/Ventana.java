@@ -22,7 +22,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
+import java.util.ArrayList;
 
 public class Ventana extends JFrame{
 
@@ -293,11 +295,9 @@ public class Ventana extends JFrame{
 		JPasswordField password = new JPasswordField();
 		password.setSize(420, 30);
 		password.setLocation(30, 140);
-		password.setOpaque(true);
 		login.add(password);
 		// ACTION LISTENER
 				botonL.addActionListener(new ActionListener() {
-
 					@Override
 					public void actionPerformed(ActionEvent e) {
 // GET USER
@@ -305,7 +305,6 @@ public class Ventana extends JFrame{
 // CONVERSION DEL ARREGLO DE CHAR A STRING 
 						String chrPass = String.valueOf(password.getPassword());// LECTOR DE DOCUMENTOS						
 						BufferedReader reader;
-						
 						try {
 							reader = new BufferedReader(new FileReader("users.txt"));
 							
@@ -315,7 +314,7 @@ public class Ventana extends JFrame{
 								String [] datos = null;
 								
 								datos = line.split(",");
-
+								
 								if(datos[2].equals(userLogin)) {
 									if(datos[3].equals(chrPass)) {
 										JOptionPane.showMessageDialog(null, "Bienvenido", " ", JOptionPane.PLAIN_MESSAGE);
@@ -329,8 +328,10 @@ public class Ventana extends JFrame{
 									JOptionPane.showMessageDialog(null, "Usuario incorrecto", " ", JOptionPane.PLAIN_MESSAGE);
 									return;
 								}
-								//line = reader.readLine();
+								
 							}
+							line = reader.readLine();
+							
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -343,10 +344,6 @@ public class Ventana extends JFrame{
 						
 					}
 				});
-			/*	anterior = actual;
-				actual = "lobby";
-				
-				route();*/
 		// Agregar el panel al JFrame
 		this.add(login); 
 		
@@ -449,6 +446,7 @@ public class Ventana extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				
 				anterior = actual;
 				actual = "cuenta";
 				
@@ -509,30 +507,38 @@ public class Ventana extends JFrame{
 		edit.setSize(400,40);
 		edit.setLocation(50, 160);
 		edit.setFont(new Font("Arial", Font.BOLD, 25));
+		edit.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "cuenta";
+					
+				route();
+			}
+			
+		});
 		usuarios.add(edit);
 		
-		Object[][] data = {
-	            {" ", " ", " "}
-	        };
+		 ArrayList<String[]> datos2 = new ArrayList<>();
+	        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+	            String line;
+	            while ((line = br.readLine()) != null) {
+	                String[] fields = line.split(",");
+	                datos2.add(fields);
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 	        
-	        // Crear nombres de columna para la tabla
-	        String[] columnNames = {"Usuario", "Nombre", "Acciones"};
+	        String[] nomCol = {"Nombre", "Apellido", "Correo", "Contraseña"};
+	        DefaultTableModel modelo = new DefaultTableModel(datos2.toArray(new String[0][0]), nomCol);
 
-	        // Crear la tabla con los datos y nombres de columna
-	        JTable table = new JTable(data, columnNames);
-
-	        // Añadir titulos a las columnas
-	        table.getColumnModel().getColumn(0).setHeaderValue("Usuario");
-	        table.getColumnModel().getColumn(1).setHeaderValue("Nombre");
-	        table.getColumnModel().getColumn(2).setHeaderValue("Acciones");
-
-	        // Agregar la tabla a un JScrollPane
-	        JScrollPane scrollPane = new JScrollPane(table);
-	        usuarios.add(scrollPane);
-	        
-	        // Establecer tamaño y posición de la tabla
-	        scrollPane.setSize(400, 230);
-	        scrollPane.setLocation(50, 280);
+	        JTable tabla = new JTable(modelo);
+	        JScrollPane scrollPane = new JScrollPane(tabla);
+	        scrollPane.setSize(400, 500);
+	        scrollPane.setLocation(50, 220);
 	        usuarios.add(scrollPane);
         
 		this.add(usuarios);
@@ -754,6 +760,4 @@ public class Ventana extends JFrame{
 		ayuda.repaint();
 		return ayuda;
 	}
-	
-
 }
